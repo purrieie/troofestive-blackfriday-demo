@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Northwind (demo store)</title>
+<meta name="robots" content="noindex">
+<style>
+body{margin:0;font:15px/1.5 -apple-system,Helvetica,Arial,sans-serif;color:#1b1b1b;background:#fff}
+.bar{background:#2a2a2a;color:#fff;text-align:center;font-size:13px;padding:9px}
+header{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #eee}
+.hd{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:18px 24px}
+.logo{font:700 22px Georgia,serif}nav a{margin:0 14px;color:#1b1b1b;text-decoration:none}nav a.sale{color:#c0392b}
+.icons span{margin-left:16px}
+.hero{position:relative;height:540px;background:#e9e4dc url(hero.jpg) right center/auto 100% no-repeat}
+.hero .txt{position:absolute;left:6%;top:30%;max-width:460px}.hero h1{font:700 48px/1.05 Georgia,serif;margin:0 0 12px}
+.btn{display:inline-block;background:#111;color:#fff;padding:13px 26px;border-radius:30px;text-decoration:none}
+.grid{max-width:1280px;margin:40px auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f3f3f3}.card h3{font-size:16px;margin:10px 0 4px}
+.card button{margin-top:8px;width:100%;padding:10px;border-radius:24px;border:1px solid #111;background:#fff;font:600 14px inherit;font-family:inherit;cursor:pointer}
+.price s{color:#888;margin-right:6px}.price .now{font-weight:700}
+.badge{position:absolute;left:10px;bottom:10px;background:#fff;border-radius:20px;font-size:11px;padding:3px 9px}
+.card .media{position:relative}h2{max-width:1280px;margin:40px auto 0;padding:0 24px;font:700 28px Georgia,serif}
+.foot{background:#f4f1ec;margin-top:40px;padding:40px 24px;text-align:center;color:#666;font-size:13px}
+@media (max-width:700px){nav{display:none}.hero{height:460px;background-size:cover}.hero .txt{top:auto;bottom:28px;left:16px;right:16px;background:rgba(255,255,255,.88);border-radius:12px;padding:16px 18px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<div class="bar">Black Friday: 20% off sitewide. Free shipping over $100.</div>
+<header><div class="hd"><span class="logo">northwind</span><nav><a href="#">Shop</a><a href="#">Bedding</a><a href="#">Bath</a><a href="#" class="sale">Sale</a></nav><span class="icons"><span>Search</span><span>Cart (0)</span></span></div></header>
+<section class="hero"><div class="txt"><h1>The Black Friday Sale</h1><p>20% off our best sheets, towels and comforters.</p><a class="btn" href="#">Shop now</a></div></section>
+<h2>Best sellers</h2>
+<div class="grid">
+<div class="card"><div class="media"><img src="p0.jpg" alt=""><span class="badge">Best seller</span></div><h3>Luxe Sateen Sheet Set</h3><div class="price"><s>$169.00</s><span class="now">$135.00</span></div><button>Add to cart</button></div>
+<div class="card"><div class="media"><img src="p1.jpg" alt=""></div><h3>Washed Percale Set</h3><div class="price"><s>$199.00</s><span class="now">$149.00</span></div><button>Add to cart</button></div>
+<div class="card"><div class="media"><img src="p2.jpg" alt=""></div><h3>Down Comforter</h3><div class="price"><span class="now">$244.00</span></div><button>Add to cart</button></div>
+<div class="card"><div class="media"><img src="p3.jpg" alt=""></div><h3>The Wallet</h3><div class="price"><s>$99.00</s><span class="now">$49.00</span></div><button>Add to cart</button></div>
+</div>
+<h2>New this week</h2>
+<div class="grid">
+<div class="card"><div class="media"><img src="p2.jpg" alt=""></div><h3>Waffle Bath Towels</h3><div class="price"><s>$88.00</s><span class="now">$66.00</span></div><button>Add to cart</button></div>
+<div class="card"><div class="media"><img src="p0.jpg" alt=""></div><h3>Linen Duvet Cover</h3><div class="price"><span class="now">$289.00</span></div><button>Add to cart</button></div>
+</div>
+<div class="foot">Northwind is a made-up store for this demo. Prices are not real.</div>
+<div style="height:300px"></div>
+<script>
+/* TrooFestive Black Friday mode, Cyber Neon, the same engine as the Chrome extension. ?troofestive=off shows the plain store. */
+(function () {
+  if (/[?&]troofestive=off/.test(location.search)) return;
+  var B = 'tf/', A = B + 'assets/';
+  var assets = { giftClosed: A + 'gift-closed.webp', giftOpen: A + 'gift-open.webp', coin: A + 'coin.webp' };
+  function load(src) { return new Promise(function (r) { var s = document.createElement('script'); s.src = src; s.onload = r; s.onerror = r; document.head.appendChild(s); }); }
+  function go() {
+    load(B + 'troo-blackfriday-look.js').then(function () { return load(B + 'troo-blackfriday-moments.js'); }).then(function () {
+      var T = window.TrooFestive; if (!T) return;
+      T.start({ look: 'neon', accent: 'lime', countdown: { ends: '2026-11-30T23:59' }, assets: assets, headerSelector: 'header' });
+      if (T.moments) T.moments.start({ loader: false, burst: true, reward: true, rewardEvery: true, rewardCode: 'BLACKFRIDAY15', rewardText: '15% off', assets: assets });
+    });
+  }
+  if (document.readyState === 'complete') go(); else addEventListener('load', go);
+})();
+</script>
+</body></html>
