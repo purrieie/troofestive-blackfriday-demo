@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Northwind (demo store)</title>
 <meta name="robots" content="noindex">
 <style>
-body{margin:0;font:15px/1.5 -apple-system,Helvetica,Arial,sans-serif;color:#1b1b1b;background:#fff}
+html,body{overflow-x:clip}body{margin:0;font:15px/1.5 -apple-system,Helvetica,Arial,sans-serif;color:#1b1b1b;background:#fff}
 .bar{background:#2a2a2a;color:#fff;text-align:center;font-size:13px;padding:9px}
 header{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #eee}
 .hd{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:18px 24px}
@@ -41,16 +41,50 @@ header{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #
 (function () {
   if (/[?&]troofestive=off/.test(location.search)) return;
   var B = 'tf/', A = B + 'assets/';
-  var assets = { giftClosed: A + 'gift-closed.webp', giftOpen: A + 'gift-open.webp', coin: A + 'coin.webp' };
+  var assets = { giftClosed: A + 'gift-closed.webp', giftOpen: A + 'gift-open.webp', coin: A + 'coin.webp',
+    tagBlack: A + 'tag-black.webp', tagGold: A + 'tag-gold.webp', tagRedPct: A + 'tag-red-pct.webp', tagRedSale: A + 'tag-red-sale.webp',
+    ribbonTie: A + 'ribbon-black-gold.webp', ribbonRed: A + 'ribbon-red.webp', confettiGold: A + 'confetti-gold.webp', confettiRed: A + 'confetti-red.webp', scratchFoil: A + 'scratch-foil.webp' };
+  /* the look: the landing page's look picker (parent.TF_DEMO_LOOK), or ?look=tie|neon|red|quiet, else Cyber Neon */
+  var look = (function () { try { return parent !== window && parent.TF_DEMO_LOOK; } catch (e) {} })() || (location.search.match(/[?&]look=(\w+)/) || [])[1] || 'neon';
+  function run(lk) { window.TrooFestive.start({ look: lk, accent: 'lime', countdown: { ends: '2026-11-30T23:59' }, assets: assets, headerSelector: 'header' }); }
+  window.tfLook = function (lk) { look = lk; if (window.TrooFestive && window.TrooFestive.isOn()) run(lk); };
   function load(src) { return new Promise(function (r) { var s = document.createElement('script'); s.src = src; s.onload = r; s.onerror = r; document.head.appendChild(s); }); }
   function go() {
     load(B + 'troo-blackfriday-look.js').then(function () { return load(B + 'troo-blackfriday-moments.js'); }).then(function () {
       var T = window.TrooFestive; if (!T) return;
-      T.start({ look: 'neon', accent: 'lime', countdown: { ends: '2026-11-30T23:59' }, assets: assets, headerSelector: 'header' });
+      run(look);
       if (T.moments) T.moments.start({ loader: false, burst: true, reward: true, rewardEvery: true, rewardCode: 'BLACKFRIDAY15', rewardText: '15% off', assets: assets });
     });
   }
   if (document.readyState === 'complete') go(); else addEventListener('load', go);
+})();
+</script>
+<script>
+/* Look picker, only when the store is opened on its own (the landing page's phone has its own buttons). */
+(function () {
+  if (window.parent !== window) return;
+  var LOOKS = [['neon', 'Cyber Neon'], ['tie', 'Black Tie'], ['red', 'Red Tag'], ['quiet', 'Quiet'], ['off', 'Off']];
+  var cur = /[?&]troofestive=off/.test(location.search) ? 'off' : ((location.search.match(/[?&]look=(\w+)/) || [])[1] || 'neon');
+  var css = document.createElement('style');
+  css.textContent = '.tfp{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483646;display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;background:rgba(12,12,14,.92);box-shadow:0 10px 30px -8px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.1);font:600 13px/1 -apple-system,Helvetica,Arial,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}'
+    + '.tfp::-webkit-scrollbar{display:none}.tfp span{color:#9a9aa3;padding:0 8px 0 10px;white-space:nowrap;font-size:12px}'
+    + '.tfp button{flex:none;border:0;background:transparent;color:#e8e8ec;padding:9px 13px;border-radius:999px;cursor:pointer;font:inherit;white-space:nowrap}'
+    + '.tfp button:hover{background:rgba(255,255,255,.08)}.tfp button[aria-pressed=true]{background:#C8F31D;color:#0A0A0C}'
+    + '.tfp button:focus-visible{outline:2px solid #C8F31D;outline-offset:2px}'
+    + '@media (max-width:520px){.tfp span{display:none}.tfp button{padding:9px 10px;font-size:12px}}';
+  document.head.appendChild(css);
+  var bar = document.createElement('div'); bar.className = 'tfp troo-bf-x'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Black Friday look');
+  bar.innerHTML = '<span>Try a look</span>' + LOOKS.map(function (l) { return '<button type="button" data-l="' + l[0] + '" aria-pressed="' + (l[0] === cur) + '">' + l[1] + '</button>'; }).join('');
+  document.body.appendChild(bar);
+  var foot = document.createElement('div'); foot.style.height = '70px'; document.body.appendChild(foot);
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var lk = b.getAttribute('data-l'), wasOff = cur === 'off'; cur = lk;
+    [].forEach.call(bar.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b); });
+    var u = location.pathname + (lk === 'off' ? '?troofestive=off' : lk === 'neon' ? '' : '?look=' + lk);
+    if (lk === 'off' || wasOff || !window.tfLook) { location.replace(u); return; }  // the engine isn't loaded when off: reload
+    history.replaceState(null, '', u); window.tfLook(lk);
+  });
 })();
 </script>
 </body></html>
